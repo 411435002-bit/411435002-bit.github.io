@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bucks Fan Page</title>
+    <title>Milwaukee Bucks Roster</title>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
-        /* 這裡設定配色 (Colorhunt 風格) - 公鹿隊配色 */
+        /* --- 全域設定 --- */
         body {
             margin: 0;
             padding: 0;
@@ -22,133 +22,223 @@
         }
 
         header {
-            padding: 20px;
-            border-bottom: 2px solid #EEE1C6;
+            padding: 40px 20px;
+            border-bottom: 3px solid #EEE1C6;
+            background: linear-gradient(180deg, #003313 0%, #00471B 100%);
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
         }
 
-        #info-box {
-            background: rgba(0, 0, 0, 0.3);
-            margin: 20px auto;
-            padding: 20px;
-            max-width: 600px;
-            border-radius: 10px;
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            opacity: 0.9;
         }
 
-        /* 按鈕樣式 */
-        button {
+        /* --- 按鈕樣式 --- */
+        .action-btn {
             background-color: #EEE1C6;
             color: #00471B;
             border: none;
-            padding: 10px 25px;
-            font-size: 1.2rem;
+            padding: 12px 30px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
+            border-radius: 30px;
+            margin: 20px 10px;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        button:hover {
+        .action-btn:hover {
+            transform: scale(1.05);
             background-color: #fff;
         }
 
-        /* 3D 畫布的容器 */
-        #canvas-container {
-            width: 100%;
-            height: 400px;
+        /* --- 球員卡片區域 --- */
+        #roster-section {
+            display: none; /* 預設隱藏，用 jQuery 打開 */
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .roster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             margin-top: 20px;
         }
-        
-        footer {
-            margin-top: 20px;
-            font-size: 0.8rem;
+
+        .player-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #EEE1C6;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .player-num {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFF;
+            border-bottom: 1px solid #EEE1C6;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .player-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .player-pos {
+            font-style: italic;
             opacity: 0.8;
-            padding-bottom: 20px;
+        }
+
+        /* --- 3D 區塊 --- */
+        #canvas-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 40px;
+            background: radial-gradient(circle, rgba(0,71,27,1) 0%, rgba(0,0,0,1) 100%);
+        }
+
+        footer {
+            padding: 20px;
+            font-size: 0.8rem;
+            opacity: 0.6;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>FEAR THE DEER</h1>
-        <p>Welcome to My Personal Page</p>
+        <h1>Milwaukee Bucks</h1>
+        <div class="subtitle">Fear The Deer | 2025 Fan Page</div>
     </header>
 
     <main>
-        <div id="info-box">
-            <h2>About Me</h2>
-            <p class="content-text">
-                你好！我是公鹿隊的超級粉絲。<br>
-                這是利用 GitHub Pages 建立的個人網頁。<br>
-                下方有一顆用 Three.js 製作的 3D 旋轉籃球！
-            </p>
-            <button id="toggle-btn">隱藏/顯示介紹</button>
+        <div style="margin: 30px auto; max-width: 600px; padding: 0 20px;">
+            <p>歡迎來到公鹿隊球迷網頁！<br>點擊下方按鈕查看先發陣容。</p>
+        </div>
+
+        <button id="show-roster-btn" class="action-btn">顯示球員名單 (Show Roster)</button>
+
+        <div id="roster-section">
+            <h2>Starting Lineup & Stars</h2>
+            <div class="roster-grid">
+                <div class="player-card">
+                    <div class="player-num">#34</div>
+                    <div class="player-name">Giannis Antetokounmpo</div>
+                    <div class="player-pos">Forward / The Greek Freak</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-num">#0</div>
+                    <div class="player-name">Damian Lillard</div>
+                    <div class="player-pos">Guard / Dame Time</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-num">#22</div>
+                    <div class="player-name">Khris Middleton</div>
+                    <div class="player-pos">Forward / Money Middleton</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-num">#11</div>
+                    <div class="player-name">Brook Lopez</div>
+                    <div class="player-pos">Center / Splash Mountain</div>
+                </div>
+                 <div class="player-card">
+                    <div class="player-num">#9</div>
+                    <div class="player-name">Bobby Portis</div>
+                    <div class="player-pos">Forward / The People's Champ</div>
+                </div>
+            </div>
         </div>
 
         <div id="canvas-container"></div>
     </main>
 
     <footer>
-        &copy; 2025 Milwaukee Bucks Fan Page. Created for Class.
+        &copy; 2025 Milwaukee Bucks Fan Page. All Rights Reserved.
     </footer>
 
     <script>
-        // --- 1. jQuery 部分 (老師要求的簡單特效) ---
+        // --- jQuery 部分 (互動特效) ---
         $(document).ready(function(){
-            $("#toggle-btn").click(function(){
-                // 讓文字區塊滑動隱藏或顯示
-                $(".content-text").slideToggle("slow");
+            // 點擊按鈕時，滑動顯示球員名單
+            $("#show-roster-btn").click(function(){
+                $("#roster-section").slideToggle("slow", function() {
+                    // 切換按鈕文字
+                    if ($(this).is(":visible")) {
+                        $("#show-roster-btn").text("隱藏球員名單 (Hide Roster)");
+                    } else {
+                        $("#show-roster-btn").text("顯示球員名單 (Show Roster)");
+                    }
+                });
             });
         });
 
-        // --- 2. Three.js 部分 (老師要求的 3D 網站) ---
-        // 設定場景
+        // --- Three.js 部分 (3D 籃球動畫) ---
         const scene = new THREE.Scene();
-        
-        // 設定攝影機
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
-        camera.position.z = 5;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 300, 0.1, 1000);
+        camera.position.z = 6;
 
-        // 設定渲染器
-        const renderer = new THREE.WebGLRenderer({ alpha: true }); // alpha: true 讓背景透明
-        renderer.setSize(window.innerWidth, 400);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, 300);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // 建立幾何體 (這裡做一個像是籃球的球體，用網格顯示)
-        const geometry = new THREE.SphereGeometry(2.5, 16, 16);
+        // 建立幾何體 (球體)
+        const geometry = new THREE.SphereGeometry(3, 20, 20); // 半徑 3
         const material = new THREE.MeshBasicMaterial({ 
-            color: 0xEEE1C6,  // 奶油白線條
-            wireframe: true   // 開啟網格模式，看起來比較科技感
+            color: 0xEEE1C6, 
+            wireframe: true // 網格風格
         });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
 
-        // 動畫迴圈
+        // 為了更帥氣，加一個簡單的光環
+        const ringGeo = new THREE.TorusGeometry(4.5, 0.1, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00471B, transparent: true, opacity: 0.5 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
+
         function animate() {
             requestAnimationFrame(animate);
-
-            // 讓球體旋轉
+            
+            // 球體旋轉
             sphere.rotation.x += 0.01;
             sphere.rotation.y += 0.01;
+            
+            // 光環晃動
+            ring.rotation.x += 0.005;
+            ring.rotation.y += 0.005;
 
             renderer.render(scene, camera);
         }
-
         animate();
 
-        // 處理視窗縮放，讓 3D 物件不會變形
+        // 視窗縮放處理
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / 400;
+            camera.aspect = window.innerWidth / 300;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, 400);
+            renderer.setSize(window.innerWidth, 300);
         });
     </script>
 
 </body>
 </html>
-
